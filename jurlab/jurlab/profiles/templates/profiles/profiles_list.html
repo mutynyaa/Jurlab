@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% extends 'mainpage/base.html' %}
+{% block content %}
+<br >
+<div align="center" class="block_name"><div ><h5><strong>Сотрудники отдела</strong></h5></div></div>
+<br >
+<div align="center" class="block_name"><strong>Пользователей онлайн: {{ user_status.count }}</strong></div>
+<br />
+
+
+{% for prof in profiles %}
+
+<div class="container dark_block_bg br_10 profiles_list_block">
+	{% for user_item in user_status %}
+	{% if prof.user.id == user_item.user.id %}
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-1">
+				<div class="online_circle"></div>
+			</div>
+			<div class="col-lg-1">
+				<div>Online</div>
+			</div>
+			<div class="col-lg-3">
+					{{ user_item.last_activity }}
+			</div>
+		</div>
+	</div>
+	{% else %}
+	{% endif %}
+	{% endfor %}
+
+
+
+	<div class="row">
+
+	<div class="col-lg-5">
+		<img class="profile_avatar" height="102px" width="102px" align="bottom" src="{{ prof.avatar.url }}"><a class="profiles_list_link" href="{% url 'profile_detail' pk=prof.pk %}"><strong>{{ prof.name }} {{ prof.surname }}</strong></a>
+	</div>
+	<div class="col-lg-6 user_list_block">
+		<small>{{ prof.department }}</small>
+		<div><small>{{ prof.position }}</small></div>
+	</div>
+	</div>
+
+</div>
+
+</div>
+<br >
+
+
+
+{% endfor %}
+
+{% endblock %}

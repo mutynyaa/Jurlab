@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "migrations": {
+    "contenttypes": "0002_remove_content_type_name",
+    "auth": "0012_alter_user_first_name_max_length",
+    "admin": "0003_logentry_add_action_flag_choices",
+    "sessions": "0001_initial",
+    "mainpage": "0008_supervisor_ex_author_vision",
+    "courts": "0110_delete_courtsjurisdiction",
+    "profiles": "0038_remove_profiles_unread_courts",
+    "deals": "0013_deals_start_agreement_time",
+    "execution": "0010_executions_read_execution_users",
+    "posts": "0004_auto_20200721_1359",
+    "django_summernote": "0002_update-help_text",
+    "online_users": "0001_initial"
+  }
+}

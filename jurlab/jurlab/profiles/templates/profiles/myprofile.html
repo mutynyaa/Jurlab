@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% extends 'mainpage/base.html' %}
+{% block content %}
+
+<div class="container">
+	<br >
+	<div><strong>Мой профиль</strong></div>
+	<br >
+	<div class="row">
+		<div class="col-lg-6">
+			<div>Фамилия: {{ user.profiles.surname }}</div>	
+			<div>Имя: {{ user.profiles.name }}</div>
+			<div>Отчество: {{ user.profiles.fathers_name }}</div>
+			<div>Отдел: {{ user.profiles.department }}</div>
+			<div>Должность: {{ user.profiles.position }}</div>
+			<div>День рождения: {{ user.profiles.birthday }}</div>
+			<div>Рабочий номер телефона: {{ user.profiles.phone_number_job }}</div>
+			<div>Домашний номер телефона: {{ user.profiles.phone_number_home }}</div>
+			<div>Занимает должность с {{ user.profiles.position_date }}</div>
+			<hr />
+		</div>
+		<div class="col-lg-6">
+			<div align="right"><img height="250px" width="250px" align="bottom" src="{{ user.profiles.avatar.url }}"></div>
+		</div>
+	</div>
+</div>
+
+
+	<form method="POST" enctype="multipart/form-data" class="courts-form">{% csrf_token %}
+	<div class="container">
+        	<div class="form_comment_block">
+				<div >
+				
+				</div>
+				<div>
+					{{ form.avatar }}
+				</div>
+				<div class="text-right"><button type="submit"  class="court_comment_btn">Изменить аватар</button></div>
+			</div>
+		</div>
+    	</form>
+
+{% endblock %}

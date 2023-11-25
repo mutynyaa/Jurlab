@@ -1,0 +1,299 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+{% block content %}
+	
+<!-- Table / Таблица -->
+	<div class="container dark_block_bg_z_index_none">
+		{% if request.user.is_staff %}
+			<div align="left">
+				<!-- Button trigger modal -->
+							<span align="right">
+								<button type="button" class="red_alert_delete_btn" data-toggle="modal" data-target="#ex_delete_modal">
+								  Удалить исп. произ.
+								</button>
+							</span>
+
+							<!-- Modal -->
+							<div class="modal fade" id="ex_delete_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitles1" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+								  <div align="center" class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitles1">Вы уверены, что хотите удалить исполнительное производство?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span class="document_delete" aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div align="center" class="modal-body">
+									  <div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+									Функция удаления исполнительного производства добавлена лишь для случаев случайного создания нежелательного экземпляра. Если вы ходите убрать исполнительное поизводство из активных, добавьте его в архив.
+									  Вы не сможете восстановить исполнительное производство в случае его удаления.
+								  </div>
+								  <div class="modal-footer">
+									<div align="right"><small><strong><a class="delete_agreement"  href="delete/">Ок </a></strong></small></div>
+									<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+			</div>
+		{% endif %}
+	<div align="right"><a class="block_like_link_btn_blue" href="{% url 'execution_edit' pk=execution_detail.pk %}">Редактировать</a></div>
+		<div class="ex_detail_top_container">
+		<strong><div title="Смотреть подробнее">Исполнительное производство по делу <div> <a class="big_heading" href="{% url 'courts_detail' pk=execution_detail.court.id %}">{{ execution_detail.court.plaintiff }} против {{ execution_detail.court.defendant }}</a></div></div></strong>
+		<span><small>№ дела {{ execution_detail.court.case_number }}</small></span> // <span><small>Дата создания {{ execution_detail.created_date }}</small></span>
+		</div>
+		<br />
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 center_item_position margin_top_bot_20">
+					<small>Создал: {{ execution_detail.author.profiles.name }} {{ execution_detail.author.profiles.surname }}</small>
+					{% if execution_detail.author %}
+					<img class="circle_image" src="{{ execution_detail.author.profiles.avatar.url }}" height="32px" width="32px"/>
+					{% endif %}
+				</div>
+				<div class="col-lg-6 center_item_position margin_top_bot_20">
+					<small>Ответственный: {{ execution_detail.responsible.profiles.name }} {{ execution_detail.responsible.profiles.surname }}</small>
+					{% if execution_detail.responsible %}
+					<img class="circle_image" src="{{ execution_detail.responsible.profiles.avatar.url }}" height="32px" width="32px"/>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="margin_top_bot_20">
+			<small>Наблюдатели: | {% for obs in execution_detail.observer.all %} {{ obs.first_name }} {{ obs.last_name }} | {% endfor %}</small>
+		</div>
+		<div class="row">
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>№ исполнительного листа</b></p>{{ execution_detail.document_nmb }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Дата составления ИЛ</b></p>{{ execution_detail.document_date }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Дата направления ИЛ</b></p>{{ execution_detail.dispath_document }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Наименование органа</b></p>{{ execution_detail.agency }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Адресс органа</b></p>{{ execution_detail.agency_address }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Контактный телефон органа</b></p>{{ execution_detail.agency_phone }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4 table_block_item ">
+				<p class="court_detail_p"><b>Исполнитель</b></p>{{ execution_detail.executor }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Долг</b></p>{{ execution_detail.debt }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Взыскано</b></p>{{ execution_detail.exact }}
+			</div>
+		</div>
+	</div>
+	<br />
+<!-- Documents / Документы -->
+	<div class="document_word_block" align="center"><strong class="document_word">Документы</strong></div>
+		<div class="container dark_block_bg_z_index_none">
+			<div class="row">
+				<div class="col-lg-3">
+				</div>
+				<div align="" class="col-lg-6 court_document_block_left">
+					<br />
+					{% for i in execution_documents %}
+					<ul>
+						<li class="document_li"><a target="_blank" href="{{ i.execution_documents.url }}"><small>№ {{ forloop.counter }}</small> {{ i.execution_ducuments.name|slice:"19:80" }}</a>
+
+						<!-- Button trigger modal -->
+							<span align="right">
+								<button type="button" class="document_delete" data-toggle="modal" data-target="#ex_doc_delete_modal-{{ i.id }}">
+								  x
+								</button>
+							</span>
+
+							<!-- Modal -->
+							<div class="modal fade" id="ex_doc_delete_modal-{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitles" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+								  <div align="center" class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitles">Вы уверены, что хотите удалить данный документ?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span class="document_delete" aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div align="center" class="modal-body">
+									  <div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+									Вы не сможете восстановить удаленный документ после подтверждения удаления
+								  </div>
+								  <div class="modal-footer">
+									<div align="right"><small><strong><a class="delete_agreement"  href="{% url 'ex_documents_delete' pk=i.id %}">Ок </a></strong></small></div>
+									<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						</li>
+					</ul>
+					{% endfor %}
+					<br />
+					<hr />
+					<form  enctype="multipart/form-data" method="POST" class="">{% csrf_token %}
+						<div align="left">{{ ex_form_doc.execution_ducuments }}</div><div align="right" class=""><div><button onclick="ScrollSave()" type="submit" name="btnformdocuments" class="common_link_btn">Загрузить</button></div></div>
+					</form>
+					<br />
+				</div>
+				<div class="col-lg-3">
+				</div>
+			</div>
+		</div>
+	<br />
+<!-- View comments / Отображение коментариев -->
+	<div class="container">
+		<!-- Top Paginator / Верхний пагинатор -->
+				<div align="center"><h6><strong>Комментарии:</strong></h6></div>
+				{% if is_paginated %}
+				<ul class="pagination page_lister">
+					<li class="pages-item {% if not prev_url %} disabled {% endif %}">
+						<a class="pages-link" href="{{ prev_url }}" tabindex="-1"><b><</b></a>
+					</li>
+					{% if page_object.number > 3 %}
+					<li class="pages-item">
+						<a class="pages-link" href="?page={{ 1 }}" tabindex="-1">{{ 1 }}</a>
+					</li>
+					{% endif %}
+					{% for n in page_object.paginator.page_range %}
+					{% if page_object.number == n %}
+					<li class="pages-item active pages-active">
+						<p class="pages-active" href="?page={{ n }}" tabindex="-1"><b>{{ n }}</b><span class="cr-only pages-active"></span></p>
+					</li>
+						{% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+					<li class="pages-item">
+						<a class="pages-link" href="?page={{ n }}">{{ n }}</a>
+					</li>
+						{% endif %}
+						{% endfor %}
+					{% if page_object.number < paginator.num_pages|add:-2%}
+					<li class="pages-item">
+						<a class="pages-link" href="?page={{ paginator.num_pages }}" tabindex="-1">{{ paginator.num_pages }}</a>
+					</li>
+					{% endif %}
+					<li class="pages-item {% if not next_url %} disabled {% endif %}">
+						<a class="pages-link" href="{{ next_url }}" tabindex="-1"><b>></b></a>
+					</li>
+				</ul>
+				{% endif %}
+				{% for comm_item in page_object.object_list %}
+				<div class="container comment_container">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="comment_date"><small><i>{{ comm_item.create_date }} | № {{ forloop.counter }}</i></small></div>
+							
+							<div class="comment_author"><a href="{% url 'profile_detail' pk=comm_item.author.profiles.id %}">{{ comm_item.author }}</a></div>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-1">
+							<img class="comment_avatar" src="{{ comm_item.author.profiles.avatar.url }}" height="100px" width="100px"/>
+						</div>
+						<div class="col-xs-12">
+							<div class="comment_text">{{ comm_item.text|safe }}</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12 court_comments_bot_bar">
+						
+						{% if comm_item.author.id == request.user.id or request.user.is_staff %}
+						<!-- Button trigger modal -->
+							<div align="right">
+								<button type="button" class="common_link_btn" data-toggle="modal" data-target="#comm_delete_modal-{{ comm_item.id }}">
+								  Удалить
+								</button>
+							</div>
+
+							<!-- Modal -->
+							<div class="modal fade" id="comm_delete_modal-{{ comm_item.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+								  <div align="center" class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitle">Вы уверены, что хотите удалить комментарий?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span class="document_delete" aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div align="center" class="modal-body">
+									  <div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+									Вы не сможете восстановить удаленный комментарий после подтверждения удаления
+								  </div>
+								  <div class="modal-footer">
+									<div align="right"><small><strong><a class="delete_agreement"  href="{% url 'ex_comments_delete' pk=comm_item.id %}">Ок </a></strong></small></div>
+									<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						{% endif %}
+						</div>
+					</div>
+				</div>
+			<br />
+			
+			{% endfor %}
+			</div>
+<!-- Bottom Paginator / Нижний пагинатор -->
+	<div class="container">
+		<div class="court_comments">
+				{% if is_paginated %}
+				<ul class="pagination page_lister">
+					<li class="pages-item {% if not prev_url %} disabled {% endif %}">
+						<a class="pages-link" href="{{ prev_url }}" tabindex="-1"><b><</b></a>
+					</li>
+					{% if page_object.number > 3 %}
+					<li class="pages-item">
+						<a class="pages-link" href="?page={{ 1 }}" tabindex="-1">{{ 1 }}</a>
+					</li>
+					{% endif %}
+					{% for n in page_object.paginator.page_range %}
+					{% if page_object.number == n %}
+					<li class="pages-item active pages-active">
+						<p class="pages-active" href="?page={{ n }}" tabindex="-1"><b>{{ n }}</b><span class="cr-only pages-active"></span></p>
+					</li>
+						{% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+					<li class="pages-item">
+						<a class="pages-link" href="?page={{ n }}">{{ n }}</a>
+					</li>
+						{% endif %}
+						{% endfor %}
+					{% if page_object.number < paginator.num_pages|add:-2%}
+					<li class="pages-item">
+						<a class="pages-link" href="?page={{ paginator.num_pages }}" tabindex="-1">{{ paginator.num_pages }}</a>
+					</li>
+					{% endif %}
+					<li class="pages-item {% if not next_url %} disabled {% endif %}">
+						<a class="pages-link" href="{{ next_url }}" tabindex="-1"><b>></b></a>
+					</li>
+				</ul>
+				{% endif %}
+				</div>
+				</div>
+				
+<!-- Input comment form / Форма ввода комментария -->			
+			<form method="POST" class="courts-form">{% csrf_token %}
+			<div class="container">
+				<div class="form_comment_block">
+					<div>
+						<span class="com_text_block">Комментарий:</span>
+					</div>
+					<div>
+						{{ ex_com_form.text }}
+					</div>
+					<div class="text-right"><button type="submit" name="btnformcomments"  class="common_link_btn">Добавить комментарий</button></div>
+				</div>
+			</div>
+			</form>
+{% endblock %}

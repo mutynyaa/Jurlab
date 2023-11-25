@@ -1,0 +1,328 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+	{% block content %}
+
+
+<span class="line_one">
+
+		</span>
+
+
+
+
+
+	<style>
+
+	.fixed {
+	 position: fixed;
+	 top: 0px; /*здесь указываем отступ сверху*/
+	 z-index: 100; /*устанавливаем блок поверх всех элементов на странице*/
+	 
+	}
+
+	.myclass {
+		position:relative !important;
+		margin-left: auto !important;
+	}
+
+
+	</style>
+<script>
+	$(function(){
+		$(window).scroll(function() {
+			if( window.innerWidth >= 990 ){
+				var top = $(document).scrollTop();
+				if (top > 250) $('.float_block').addClass('fixed'); //200 - это значение высоты прокрутки страницы для добавления класс
+				else $('.float_block').removeClass('fixed');
+				if (top > 250) $('.float_anchor').addClass('myclass'); //200 - это значение высоты прокрутки страницы для добавления класс
+				else $('.float_anchor').removeClass('myclass');
+			} else {
+				$('.float_block').removeClass('fixed');
+				$('.float_anchor').removeClass('myclass');
+			}
+		});
+	});
+
+
+</script>
+<!-- Форма поиска по судебным делам / search form for court list-->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-3 float_block">
+			<br />
+			<div class="container center_item_position aside_search_block">
+				<div class="row">
+					<div class="col-lg-12">
+						<div><strong>Поиск по судебным делам:</strong></div>
+						<form action="{% url 'court' %}">
+							<input class="mini_text_input" type="search" placeholder="Введите запрос" aria-label="search" name="search">
+							<button class="app_search_btn" type="submit">Поиск</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<br />
+<!-- Форма фильтра судебных дел-->
+			<div class="dark_block_bg center_item_position">
+				<div class="filter_name_block">
+					<strong>Фильтрация:</strong>
+					<div><small>Активные судебные дела</small></div>
+				</div>
+				<form method="get">
+				<div>
+					<a href="{% url 'court' %}">> Очистить фильтр <</a>
+				</div>
+
+					<div class="filter_item_block">
+						{% if supervisor.court_author_vision != True %}
+					<div align="center" title="Судебные дела, которые вы создали / куда вы были назначены ответственным или наблюдателем">
+						{{ cat_filter_form.only_my_courts }} Мои суды
+					</div>
+						<div>{{ cat_filter_form.only_unread_courts }} Не прочитанные</div>
+						{% endif %}
+						<div class="">
+							<div class="">
+								<div>Статус:</div> {{ cat_filter_form.status }}
+							</div>
+							<div class="">
+								<div>Юрисдикция:</div> {{ cat_filter_form.jurisdiction }}
+							</div>
+							<div class="">
+								<div>Инстанция:</div> {{ cat_filter_form.instance }}
+							</div>
+						</div>
+						<div class="">
+							<div class="">
+								<div>Категория:</div> {{ cat_filter_form.category }}
+							</div>
+							<div class="">
+								<div>Вид судопроизводства:</div> {{ cat_filter_form.type_proceedings_choises }}
+							</div>
+						</div>
+						<div class="">
+							<div class="">
+								<div>Сумма иска: </div>
+								<div>от {{ cat_filter_form.min_claim_summ }} &#8381;</div><div>до {{ cat_filter_form.max_claim_summ }} &#8381;</div>
+							</div>
+						</div>
+					</div>
+					<div><input type="submit" class="common_link_btn" value="Применить фильтр" /></div>
+			</form>
+			</div>
+		</div>
+
+	<div class="col-lg-9 float_anchor">
+	<br />
+<!-- Пагинатор / paginator -->
+			<div class="container-fluid">
+			{% if is_paginated %}
+
+			<ul class="pagination page_lister">
+				<li class="pages-item {% if not prev_url %}disabled{% endif %}">
+					<a class="pages-link" href="{{ prev_url }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1"><b>&#9668;</b></a>
+				</li>
+				{% if page_object.number > 3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ 1 }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1">{{ 1 }}</a>
+				</li>
+				{% endif %}
+				{% for n in page_object.paginator.page_range %}
+				{% if page_object.number == n %}
+				<li class="pages-item active pages-active">
+					<a class="pages-active" href="?page={{ n }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1"><b><span class="paginator_active_page">{{ n }}</span></b></a>
+				</li>
+					{% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ n }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}">{{ n }}</a>
+				</li>
+					{% endif %}
+					{% endfor %}
+				{% if page_object.number < paginator.num_pages|add:-2%}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ paginator.num_pages }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1">{{ paginator.num_pages }}</a>
+				</li>
+				{% endif %}
+				<li class="pages-item {% if not next_url %}disabled{% endif %}">
+					<a class="pages-link" href="{{ next_url }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1"><b>&#9658;</b></a>
+				</li>
+			</ul>
+			{% endif %}
+			</div>
+			{% if search_court %}
+			<div class="container-fluid">
+				Результаты по поисковому запросу "{{ search_court }}"
+			</div>
+			<br />
+			{% endif %}
+
+<!-- Форма судебных дел / court list form -->
+
+		<div class="active_arhive_block center_item_position">
+			<a class="active_arhive_btn" href="{% url 'court' %}"><span class="active_arhive_text">Активные судебные дела</span></a>
+			<a class="active_arhive_btn" href="{% url 'courts_arhive' %}"><span class="active_arhive_text">Судебные дела в архиве</span></a>
+		</div>
+		<div class="dark_block_bg">
+			<h5 class="center_item_position title">СПИСОК АКТИВНЫХ СУДЕБНЫХ ДЕЛ</h5>
+			<div align="center" class="container">
+				<a href="{% url 'courts_new' %}" class="button">
+					<span class="button__line button__line--top"></span>
+					<span class="button__line button__line--bottom"></span>
+					<span class="button__line button__line--left"></span>
+					<span class="button__line button__line--right"></span>
+
+					НОВОЕ ДЕЛО
+				</a>
+			</div>
+			{% for court in page_object.object_list %}
+			{% if court.arhive == False %}
+			<div class="container-fluid max_size_big">
+			<a title="Смотреть подробнее" class="big_heading{% for user_object in court.read_court_users.all %}{% if user_object == request.user %} bold{% else %}{% endif %}{% endfor %}" href="{% url 'courts_detail' pk=court.pk %}">
+				{{ court.plaintiff }} против {{ court.defendant }}
+			</a>
+			<hr/>
+
+			{% for user_object in court.read_court_users.all %}
+				{% if user_object == request.user %}
+				<div class="unread"><b>Не прочитано</b></div>
+				{% else %}
+				{% endif %}
+				{% endfor %}
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 center_item_position">
+						{% if court.author %}
+						<div><img class="circle_image" src="{{ court.author.profiles.avatar.url }}" height="45px" width="45px"/></div>
+						{% endif %}
+						<small>Создал: <div>{{ court.author.profiles.name }} {{ court.author.profiles.surname}}</div></small>
+					</div>
+					<div class="col-lg-6 center_item_position">
+						{% if court.responsible %}
+						<div><img class="circle_image" src="{{ court.responsible.profiles.avatar.url }}" height="45px" width="45px"/></div>
+						{% endif %}
+						<small>Ответственный:<div>{{ court.responsible.profiles.name }} {{ court.responsible.profiles.surname }}</div></small>
+					</div>
+				</div>
+			</div>
+
+			<div class="">
+				<small><img alt="Наблюдатели" class="circle_image" src="{{ MEDIA_URL }}/icons/iye_white.png" height="20px" width="40px"/>{% for obs in court.observer.all %} {{ obs }} |{% endfor %}</small>
+			</div>
+			<div class="">
+				<small><strong>{{ court.instance.get_FOO_display }} /
+				{% if court.jurisdiction %}{{ court.jurisdiction }}{% else %}Не указано{% endif %} /
+				{% if court.category %}{{ court.category }}{% else %}Не указано{% endif %} /
+				{% if court.type_proceedings %}{{ court.type_proceedings }}{% else %}Не указано{% endif %} /
+				{% if court.status %}{{ court.status }}{% else %}Не указано{% endif %}</strong></small>
+			</div>
+
+				{% if court.court_result == 1 %}<div class="court_result_bar_win"></div>{% endif %}
+				{% if court.court_result == 2 %}<div class="court_result_bar_defeat"></div>{% endif %}
+				<div class="row">
+					<div class="col-lg-3 table_block_item br_rt">
+						<p><b>№ дела</b></p>
+						{% if court.case_number == None %}Не указано{% else %}{{ court.case_number }}{% endif %}
+					</div>
+					<div class="col-lg-3 table_block_item">
+						<p><b>Наименование (местонахождение суда)</b></p>
+						{% if court.court_name == None %}Не указано{% else %}{{ court.court_name }}{% endif %}
+					</div>
+					<div class="col-lg-3 table_block_item">
+						<p><b>Телефон суда</b></p>
+						{% if court.court_phone == None %}Не указано{% else %}{{ court.court_phone }}{% endif %}
+					</div>
+					<div class="col-lg-3 table_block_item br_lt">
+						<p><b>История судебных заседаний</b></p>
+						{% if court.history_court_hearing == None %}Не указано{% else %}{{ court.history_court_hearing }}{% endif %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 table_block_item br_rb">
+						<p><b>Ближайшее судебное заседание</b></p>
+						{% if court.actual_court_hearing == None %}Не указано{% else %}{{ court.actual_court_hearing }}{% endif %}
+					</div>
+					<div class="col-lg-3 table_block_item">
+						{% if court.type_proceedings_choises == 1 %}
+						<p><b>Сумма иска</b></p>
+						{% elif court.type_proceedings_choises == 2 %}
+						<p><b>Сумма ущерба</b></p>
+						{% elif court.type_proceedings_choises == 3 %}
+						<p><b>Сумма адм. иска</b></p>
+						{% elif court.type_proceedings_choises == 4 %}
+						<p><b>Сумма ущерба</b></p>
+						{% endif %}
+						{{ court.total_sum_in_the_case_prognosis }} руб.
+
+					</div>
+					{% if court.court_result == 1 %}
+					<div class="col-lg-6 court_list_block_win br_lb">
+						<p><b>Результат</b></p>
+						Решение вынесено в нашу пользу
+					</div>
+					{% elif court.court_result == 2 %}
+					<div class="col-lg-6 court_list_block_defeat br_lb">
+						<p><b>Результат</b></p>
+						Решение вынесено не в нашу пользу
+					</div>
+					{% else %}
+					<div class="col-lg-6 table_block_item br_lb">
+						<p><b>Результат</b></p>
+						Решение судом не принято
+					</div>
+				{% endif %}
+				</div>
+			</div>
+			<br />
+
+	{% endif %}
+	{% empty %}
+			<hr />
+			<div align="center">Судов не найдено</div>
+	{% endfor %}
+
+	</div>
+		<br />
+		<!-- Вторая пагинация (снизу) / second pagination (bottom) -->
+		<div class="container-fluid">
+			{% if is_paginated %}
+
+			<ul class="pagination page_lister">
+				<li class="pages-item {% if not prev_url %}disabled{% endif %}">
+					<a class="pages-link" href="{{ prev_url }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1"><b>&#9668;</b></a>
+				</li>
+				{% if page_object.number > 3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ 1 }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1">{{ 1 }}</a>
+				</li>
+				{% endif %}
+				{% for n in page_object.paginator.page_range %}
+				{% if page_object.number == n %}
+				<li class="pages-item active pages-active">
+					<a class="pages-active" href="?page={{ n }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1"><b><span class="paginator_active_page">{{ n }}</span></b></a>
+				</li>
+					{% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ n }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}">{{ n }}</a>
+				</li>
+					{% endif %}
+					{% endfor %}
+				{% if page_object.number < paginator.num_pages|add:-2%}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ paginator.num_pages }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1">{{ paginator.num_pages }}</a>
+				</li>
+				{% endif %}
+				<li class="pages-item {% if not next_url %}disabled{% endif %}">
+					<a class="pages-link" href="{{ next_url }}{% if search_court %}&search={{ search_court }}{% endif %}{% for field in cat_filter_form %}{% if field.value != None %}&{{ field.name }}={{ field.value }}{% endif %}{% endfor %}" tabindex="-1"><b>&#9658;</b></a>
+				</li>
+			</ul>
+			{% endif %}
+			</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+{% endblock %}
+

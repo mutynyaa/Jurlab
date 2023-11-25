@@ -1,0 +1,130 @@
+{% extends 'mainpage/base.html' %}
+{% block content %}
+
+
+<div class="container dark_block_bg br_10 padding_10">
+	<br >
+	<div align="right"><a class="block_like_link_btn_blue" href="{% url 'profiles' %}">Назад к списку &#9658;</a></div>
+	<br >
+	<div class="block_name" align="center">Последняя активность {{ user_activity.last_activity }}</div>
+	<br >
+	<div class="row">
+		<div class="col-lg-3">
+			<div class="user_card_avatar" align="center"><img class="profile-ava-detail" height="250px" width="250px" src="{{ profile.avatar.url }}"></div>
+		</div>
+		<div class="col-lg-1"></div>
+		<div class="col-lg-7 user_card_block">
+			<p class="block_name user_card_header" align="center"><strong>Карточка сотрудника</strong></p>
+			<br />
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Фамилия:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.surname }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Имя:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.name }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Отчество:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.fathers_name }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Отдел:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.department }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Должность:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.position }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>День рождения:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.birthday }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Рабочий номер телефона:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.phone_number_job }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Домашний номер телефона:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.phone_number_home }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Занимает должность с:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.position_date }}
+				</div>
+			</div>
+			<div class="row">
+				<div align="" class="col-lg-6 user_card_field">
+					<b>Работает в компании с:</b>
+				</div>
+				<div align="" class="col-lg-6 user_card_field">
+					{{ profile.work_is_date }}
+				</div>
+			</div>
+			<div class="col-lg-1"></div>
+			<br />
+		</div>
+	</div>
+	{% if profile.user == request.user %}
+	<form  enctype="multipart/form-data" method="POST" class="">{% csrf_token %}
+	<div class="row">
+		<div align="left" class="col-lg-3">
+			<div class="form_comment_block">
+				<div  class="">
+					{{ form.avatar }}
+
+				</div>
+				<br >
+				<div class="text-right"><button type="submit"  class="common_link_btn">Изменить аватар</button></div>
+			</div>
+		</div>
+		<div class="col-lg-7">
+
+		</div>
+	</div>
+	</form>
+	{% else %}
+	{% endif %}
+
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+        
+<style>
+.court_detail_col_court_td_win{border:1px solid;}
+.court_detail_col_court_td_none{ border:1px solid;} .court_detail_col_court_td_defeat{ border:1px solid;} .court_detail_col_bot_right{ border:1px solid;}
+}}
+
+</style>
+
+<br />
+<form method="POST" class="courts-form">{% csrf_token %}
+<div class="container dark_block_bg br_10 center_item_position">
+	<h4><strong>Новое судебное дело</strong></h4>
+	<div><h4><strong>Шаг 1 из 2</strong></h4></div>
+	<hr />
+	<div><strong>Пожалуйста, выберите вид судебного производства по делу:</strong></div>
+	<br />
+
+				<div class="row">
+					<div align="" class="col-lg-3">
+					</div>
+					<div align="roght" class="col-lg-6">
+						{{ form.type_proceedings_choises }}
+					</div>
+					<div align="" class="col-lg-3">
+					</div>
+				</div>
+	<hr />
+		 <div align="right"><button type="submit" class="common_link_btn"><strong>Далее</strong></button></div>
+		 <br />
+	</div>
+    </form>		
+
+		
+    
+	{% endblock %}

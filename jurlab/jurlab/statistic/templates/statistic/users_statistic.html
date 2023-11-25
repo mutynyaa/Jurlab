@@ -1,0 +1,330 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+
+
+{% block content %}
+	<div class="active_arhive_block center_item_position">
+		<a class="active_arhive_btn" href="{% url 'all_statistic' %}"><span class="active_arhive_text">Общая статистика</span></a>
+		<a class="active_arhive_btn" href="{% url 'users_statistic' %}"><span class="active_arhive_text">Статистика сотрудников</span></a>
+		<a class="active_arhive_btn" href="{% url 'personal_statistic' %}"><span class="active_arhive_text">Личная статистика</span></a>
+	</div>
+<div class="container dark_block_bg">
+	<div class="block_name" align="center"><b>Статистика сотрудников</b><div> {{ name }} {{ surname }}</div></div>
+	<br />
+    <form method="POST">{% csrf_token %}
+        <div align="center">{{ choise_user_and_date_form.responsible }}</div>
+        <br />
+		<div align="center">
+			Укажите период, за который вы бы хотели видеть статистику
+		</div>
+		<div align="center">
+			<div align="center"><a href="{% url 'users_statistic' %}">> Сбросить период <</a></div>
+				С {{ choise_user_and_date_form.from_year_month }}
+				До {{ choise_user_and_date_form.to_year_month }}
+			</div>
+        <div align="center"><button type="submit"  class="common_link_btn">Выбрать</button></div>
+    </form>
+	{% if use_form_check != None %}
+        <div class="row">
+		<div class="col-lg-12 statistic_block">
+			<div class="statistic_header"><strong>Действующая нагрузка</strong></div><br >
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Сотрудник ведет судебных дел
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_active_courts }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Гражданские дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_active_courts_civil }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Уголовные дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_active_courts_criminal }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КАС)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_active_courts_administrical_proceedings }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КоАП)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_courts_administrical_offence }}
+				</div>
+			</div>
+		</div>
+        </div>
+		<div class="row">
+		<div class="col-lg-12 statistic_block">
+			<div class="statistic_header"><strong>Дела, которые вы вели ранее</strong></div><br >
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебных дел завершено
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_courts_in_archive }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Гражданские дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_courts_civil_in_archive }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Уголовные дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_courts_criminal_in_archive }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КАС)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_courts_administrical_proceedings_in_archive }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КоАП)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ choices_user_all_courts_administrical_offence_in_archive }}
+				</div>
+			</div>
+
+        </div>
+
+		</div>
+	<div class="row">
+		<div class="col-lg-6 statistic_block">
+			<div class="statistic_header"><strong>Побед в судебных делах</strong></div><br >
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					ВСЕГО
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ all_choice_users_courts_win }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Гражданские дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ civil_choice_users_courts_win }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Уголовные дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ criminal_choice_users_courts_win }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КАС)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ administrical_proceedings_choice_users_courts_win }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КоАП)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ administrical_offence_choice_users_courts_win }}
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 statistic_block">
+			<div class="statistic_header"><strong>Поражений в судебных делах</strong></div><br >
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					ВСЕГО
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ all_choice_users_courts_defeat }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Гражданские дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ civil_choice_users_courts_defeat }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Уголовные дела
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ criminal_choice_users_courts_defeat }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КАС)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ administrical_proceedings_choice_users_courts_defeat }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 statistic_block_none_margin statistic_header_item">
+					Судебные дела (КоАП)
+				</div>
+				<div class="col-lg-6 statistic_block_none_margin">
+					{{ administrical_offence_choice_users_courts_defeat }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<br ><div class="block_name" align="center"><b>Сравнительная статистика судебных дел</b></div>
+	<div class="row">
+		<div class="col-lg-12 statistic_block">
+			<div class="statistic_header" align="center">Соотношение выйгранных и програннных судебных дел</div>
+			{% if choice_users_all_courts_result_win_percent or choice_users_all_courts_result_defeat_percent != None %}
+			<div title="Побед: {{ all_choice_users_courts_win }} ед. ({{ all_courts_result_win_percent|floatformat:'0' }} %) | Поражений: {{ all_choice_users_courts_defeat }} ед. ({{ choice_users_all_courts_result_defeat_percent|floatformat:'0' }} %)"
+				 class="progress_info_item">
+				{{ choice_users_all_courts_result_win_percent|floatformat:'1' }} % | {{ choice_users_all_courts_result_defeat_percent|floatformat:'1' }} %
+			</div>
+
+			<div class="progress progress_defeat_background">
+				<div title="" class="progress-bar progress-bar-striped progress_win_background" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{ choice_users_all_courts_result_win_percent|floatformat:'0' }}%"><strong><span class="statistic_text_position_in_bar_right"></span></strong></div>
+			<div class=""><strong></strong></div>
+			</div>
+			<br />
+			{% else %}
+			<div class="progress_info_item_none_statistic">
+				Недостаточно данных
+			</div>
+			<br />
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-6 statistic_block">
+			<div class="statistic_header" align="center">Победы / Поражения <div>Гражданские дела</div></div>
+			{% if choice_users_civil_courts_result_win_percent or choice_users_civil_courts_result_defeat_percent != None %}
+			<div title="Побед: {{ civil_choice_users_courts_win }} ед. ({{ choice_users_civil_courts_result_win_percent|floatformat:'0' }} %) | Поражений: {{ civil_choice_users_courts_defeat }} ед. ({{ choice_users_civil_courts_result_defeat_percent|floatformat:'0' }} %)"
+				 class="progress_info_item">
+				{{ choice_users_civil_courts_result_win_percent|floatformat:'1' }} % | {{ choice_users_civil_courts_result_defeat_percent|floatformat:'1' }} %
+			</div>
+
+
+			<div class="progress progress_defeat_background">
+				<div title="" class="progress-bar progress-bar-striped progress_win_background" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{ choice_users_civil_courts_result_win_percent|floatformat:'0' }}%"><strong><span class="statistic_text_position_in_bar_right"></span></strong></div>
+			<div class=""><strong></strong></div>
+			</div>
+			<br />
+			{% else %}
+			<div class="progress_info_item_none_statistic">
+				Недостаточно данных
+			</div>
+			<br />
+			{% endif %}
+		</div>
+		<div class="col-lg-6 statistic_block">
+			<div class="statistic_header" align="center">Победы / Поражения <div>Уголовные дела</div></div>
+			{% if choice_users_criminal_courts_result_win_percent or choice_users_criminal_courts_result_defeat_percent != None %}
+			<div title="Побед: {{ criminal_choice_users_courts_win }} ед. ({{ choice_users_criminal_courts_result_win_percent|floatformat:'0' }} %) | Поражений: {{ criminal_choice_users_courts_defeat }} ед. ({{ choice_users_criminal_courts_result_defeat_percent|floatformat:'0' }} %)"
+				 class="progress_info_item">
+				{{ choice_users_criminal_courts_result_win_percent|floatformat:'1' }} % | {{ choice_users_criminal_courts_result_defeat_percent|floatformat:'1' }} %
+			</div>
+
+
+			<div class="progress progress_defeat_background">
+				<div title="" class="progress-bar progress-bar-striped progress_win_background" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{ choice_users_criminal_courts_result_win_percent|floatformat:'0' }}%"><strong><span class="statistic_text_position_in_bar_right"></span></strong></div>
+			<div class=""><strong></strong></div>
+			</div>
+			<br />
+			{% else %}
+			<div class="progress_info_item_none_statistic">
+				Недостаточно данных
+			</div>
+			<br />
+			{% endif %}
+		</div>
+	</div>
+
+
+
+	<div class="row">
+		<div class="col-lg-6 statistic_block">
+			<div class="statistic_header" align="center">Победы / Поражения <div>Административные дела (КАС)</div></div>
+			{% if choice_users_administrical_proceedings_courts_result_win_percent or choice_users_administrical_proceedings_courts_result_defeat_percent != None %}
+			<div title="Побед: {{ administrical_proceedings_choice_users_courts_win }} ед. ({{ choice_users_administrical_proceedings_courts_result_win_percent|floatformat:'0' }} %) | Поражений: {{ administrical_proceedings_choice_users_courts_defeat }} ед. ({{ choice_users_administrical_proceedings_courts_result_defeat_percent|floatformat:'0' }} %)"
+				 class="progress_info_item">
+				{{ choice_users_administrical_proceedings_courts_result_win_percent|floatformat:'1' }} % | {{ choice_users_administrical_proceedings_courts_result_defeat_percent|floatformat:'1' }} %
+			</div>
+
+
+			<div class="progress progress_defeat_background">
+				<div title="" class="progress-bar progress-bar-striped progress_win_background" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{ choice_users_administrical_proceedings_courts_result_win_percent|floatformat:'0' }}%"><strong><span class="statistic_text_position_in_bar_right"></span></strong></div>
+			<div class=""><strong></strong></div>
+			</div>
+			<br />
+			{% else %}
+			<div class="progress_info_item_none_statistic">
+				Недостаточно данных
+			</div>
+			<br />
+			{% endif %}
+		</div>
+		<div class="col-lg-6 statistic_block">
+			<div class="statistic_header" align="center">Победы / Поражения <div>Административные дела (КоАП)</div></div>
+			{% if choice_users_administrical_offence_courts_result_win_percent or choice_users_administrical_offence_courts_result_defeat_percent != None %}
+			<div title="Побед: {{ administrical_offence_choice_users_courts_win }} ед. ({{ choice_users_administrical_offence_courts_result_win_percent|floatformat:'0' }} %) | Поражений: {{ administrical_offence_choice_users_courts_defeat }} ед. ({{ choice_users_administrical_offence_courts_result_defeat_percent|floatformat:'0' }} %)"
+				 class="progress_info_item">
+				{{ choice_users_administrical_offence_courts_result_win_percent|floatformat:'1' }} % | {{ choice_users_administrical_offence_courts_result_defeat_percent|floatformat:'1' }} %
+			</div>
+
+
+			<div class="progress progress_defeat_background">
+				<div title="" class="progress-bar progress-bar-striped progress_win_background" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{ choice_users_administrical_offence_courts_result_win_percent|floatformat:'0' }}%"><strong><span class="statistic_text_position_in_bar_right"></span></strong></div>
+			<div class=""><strong></strong></div>
+			</div>
+			<br />
+			{% else %}
+			<div class="progress_info_item_none_statistic">
+				Недостаточно данных
+			</div>
+			<br />
+			{% endif %}
+		</div>
+	</div>
+	{% else %}
+
+	{% endif %}
+</div>
+
+
+{% endblock %}

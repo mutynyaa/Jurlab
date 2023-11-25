@@ -1,0 +1,706 @@
+{% extends 'mainpage/base.html' %}
+{% block content %}
+{% load static %}
+
+	<br />
+
+	{% if court.court_result == 1 or court.court_result == 2 %}
+	<div align="center">
+		<a class="block_like_link_btn_create_executive" href="{% url 'execution_new' pk=court.pk %}">
+			<span class="button__line button__line--top"></span>
+			<span class="button__line button__line--bottom"></span>
+
+			СОЗДАТЬ ИСПОЛНИТЕЛЬНОЕ ПРОИЗВОДСТВО
+		</a>
+	</div>
+	<br />
+	{% endif %}
+		{% if court.type_proceedings_choises == 1 %}
+		<div class="block_name" align="center"><strong>Гражданское судопроизводство</strong></div>
+		{% elif court.type_proceedings_choises == 2 %}
+		<div class="block_name" align="center"><strong>Уголовное судопроизводство</strong></div>
+		{% elif court.type_proceedings_choises == 3 %}
+		<div class="block_name" align="center"><strong>Административное судопроизводство</strong></div>
+		{% elif court.type_proceedings_choises == 4 %}
+		<div class="block_name" align="center"><strong>Производство по делам об административных правонарушениях</strong></div>
+		{% endif %}
+<!-- Table / Таблица -->
+	<div class="container dark_block_bg_z_index_none">
+		<div class="container margin_10">
+			<div class="row">
+				<div class="col-lg-6">
+					<br />
+					{% if request.user.is_staff %}
+					<!-- Button trigger modal -->
+					<span align="right">
+						<button type="button" class="red_alert_delete_btn" data-toggle="modal" data-target="#court_delete_modal">
+						  Удалить судебное дело
+						</button>
+					</span>
+
+					<!-- Modal -->
+					<div class="modal fade" id="court_delete_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitles1" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div align="center" class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitles1">Вы уверены, что хотите удалить судебное дело?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span class="document_delete" aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div align="center" class="modal-body">
+									<div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+									Функция удаления судебного дела добавлена лишь для случаев случайного создания нежелательного экземпляра.
+									Если вы ходите убрать судебное дело из активных, добавьте его в архив.
+									Вы не сможете восстановить судебное дело в случае его удаления.
+								</div>
+								<div class="modal-footer">
+									<div align="right"><small><strong><a class="delete_agreement"  href="delete/">Ок </a></strong></small></div>
+									<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+
+				</div>
+				<div class="col-lg-6">
+					<div align="right"><a class="block_like_link_btn_blue" href="{% url 'courts_edit' pk=court.pk %}">Редактировать</a></div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<h4 class="big_heading margin_top_bot_20"><b>{{ court.plaintiff }} против {{ court.defendant }}</b></h4>
+			<div class="row">
+				<div class="col-lg-6 center_item_position margin_top_bot_20">
+					{% if court.author %}
+					<div><img class="circle_image" src="{{ court.author.profiles.avatar.url }}" height="64px" width="64px"/></div>
+					{% endif %}
+					<small>Создал: <div>{{ court.author.profiles.name }} {{ court.author.surname }}</div></small>
+				</div>
+				<div class="col-lg-6 center_item_position margin_top_bot_20">
+					{% if court.responsible %}
+					<div><img class="circle_image" src="{{ court.responsible.profiles.avatar.url }}" height="64px" width="64px"/></div>
+					{% endif %}
+					<small>Ответственный:<div>{{ court.responsible.profiles.name }} {{ court.responsible.profiles.surname }}</div></small>
+				</div>
+			</div>
+		</div>
+		<div class="margin_top_bot_20">
+			<div class="margin_10"><small><img alt="Наблюдатели" title="Наблюдатели" class="circle_image" src="{{ MEDIA_URL }}/icons/iye_black.png" height="20px" width="40px"/> | {% for obs in court.observer.all %} {{ obs.profiles.name }} {{ obs.profiles.surname }} | {% endfor %}</small></div>
+			<div class="margin_10"><small><img alt="Не прочитавшие" title="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/iye_black_close.png" height="20px" width="40px"/> | {% for read_user in court.read_court_users.all %} {{ read_user.profiles.name }} {{ read_user.profiles.surname }} |{% endfor %}</small></div>
+		</div>
+		<div class="row">
+			{% if court.court_result == 1 %}
+			<div align="center" class="col-lg-12"><b>РЕЗУЛЬТАТ</b></div>
+			<div class="col-lg-4">
+			</div>
+			<div class="col-lg-4 court_detail_col_block_win_detail">
+			</div>
+			<div class="col-lg-4"></div>
+			{% elif court.court_result == 2 %}
+			<div align="center" class="col-lg-12"><b>РЕЗУЛЬТАТ</b></div>
+			<div class="col-lg-4">
+			</div>
+			<div class="col-lg-4 court_detail_col_block_defeat_detail">
+			</div>
+			<div class="col-lg-4">
+			</div>
+			{% else %}
+			<div align="center" class="col-lg-12"><b>РЕЗУЛЬТАТ</b></div>
+			<div class="col-lg-4">
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b></b></p>Решение не принято
+			</div>
+			<div class="col-lg-4">
+			</div>
+			{% endif %}
+		</div>
+		<hr />
+		<div class="margin_10" align="center"><strong>Контакты суда</strong></div>
+		<div class="row">
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Название суда</b></p>{{ court.court_name }}
+			</div>
+			<div class="col-lg-4 table_block_item ">
+				<p class="court_detail_p"><b>Адресс суда</b></p>{{ court.court_address }}
+			</div>
+			<div class="col-lg-4 table_block_item">
+				<p class="court_detail_p"><b>Телефон суда</b></p>{{ court.court_phone }}
+			</div>
+		</div>
+		<hr />
+		<div class="margin_10" align="center"><strong>Информация по делу</strong></div>
+		{% if court.type_proceedings_choises == 1 %}
+		<!-- Гражданское судопроизводство -->
+		<div class="row">
+			<div class="col-lg-6 table_block_item ">
+				<p class="court_detail_p"><b>№ дела</b></p>{{ court.case_number }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Дата получения/подачи иска</b></p>{{ court.date_getting_lawsuit }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Истец</b></p>{{ court.plaintiff }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Ответчик</b></p>{{ court.defendant }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Представитель Истца</b></p>{{ court.plaintiff_representative }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Представитель Ответчика</b></p>{{ court.defendant_representative }}
+			</div>
+		</div>
+		{% elif court.type_proceedings_choises == 2 %}
+		<!-- Уголовное судопроизводство -->
+		<div class="row">
+			<div class="col-lg-6 table_block_item ">
+				<p class="court_detail_p"><b>№ дела</b></p>{{ court.case_number }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Дата возбуждения уголовного дела</b></p>{{ court.date_getting_lawsuit }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Потерпевший</b></p>{{ court.plaintiff }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Подсудимый</b></p>{{ court.defendant }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Прокурор</b></p>{{ court.plaintiff_representative }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Адвокат подсудимого</b></p>{{ court.defendant_representative }}
+			</div>
+		</div>
+		{% elif court.type_proceedings_choises == 3 %}
+		<!-- Административное судопроизводство -->
+		<div class="row">
+			<div class="col-lg-6 table_block_item ">
+				<p class="court_detail_p"><b>№ дела</b></p>{{ court.case_number }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Дата подачи / получения адм. иска</b></p>{{ court.date_getting_lawsuit }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Административный истец</b></p>{{ court.plaintiff }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Административный ответчик</b></p>{{ court.defendant }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Представитель адм. Истца</b></p>{{ court.plaintiff_representative }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Представитель адм. Ответчика</b></p>{{ court.defendant_representative }}
+			</div>
+		</div>
+		{% elif court.type_proceedings_choises == 4 %}
+		<!-- КОАП -->
+		<div class="row">
+			<div class="col-lg-6 table_block_item ">
+				<p class="court_detail_p"><b>№ дела</b></p>{{ court.case_number }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Дата возбуждения дела об АП</b></p>{{ court.date_getting_lawsuit }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Потерпевший</b></p>{{ court.plaintiff }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Лицо сов. адм. проступок</b></p>{{ court.defendant }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Представитель потерпевшего</b></p>{{ court.plaintiff_representative }}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Представитель лица сов. адм. проступок</b></p>{{ court.defendant_representative }}
+			</div>
+		</div>
+		{% endif %}
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Третьи лица</b></p>{% if court.third_persons == None %}Отсуствуют{% else %}{{ court.third_persons }}{% endif %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Ближайшее судебное заседание</b></p>{% if court.actual_court_hearing == None %}Не назначено{% else %}{{ court.actual_court_hearing }}{% endif %}
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>История судебных заседаний</b></p>{% if court.history_court_hearing == "" %}История пуста{% else %}{{ court.history_court_hearing }}{% endif %}
+			</div>
+		</div>
+		<hr />
+		<div class="margin_10" align="center"><strong>Суммы по делу</strong></div>
+		<div class="margin_10" align="center"><strong>Заявлено</strong></div>
+		{% if court.type_proceedings_choises == 1 %}
+		<!-- Гражданское судопроизводство -->
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Сумма иска</b></p>{{ court.lawsuit_amount }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Основное требование</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_main_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма неустойки</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_penalty_agent_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма штрафа</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_of_penalty_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Неимущественная компенсация</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_moral_damage_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма экспертизы</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_expertize_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма госпошлины</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.state_duty_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Итого заявлено</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.total_sum_in_the_case_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="margin_10" align="center"><strong>Присуждено</strong></div>
+		<div class="row">
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Основное требование</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_main }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма неустойки</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_moral_damage }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма штрафа</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_of_penalty }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Неимущественная компенсация</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_moral_damage }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма экспертизы</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_expertize }} &#8381</span>
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма госпошлины</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.state_duty }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Итого присуждено</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.total_sum_in_the_case }} &#8381</span>
+			</div>
+		</div>
+		{% elif court.type_proceedings_choises == 2 %}
+		<!-- Уголовное судопроизводство -->
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Заявленная сумма ущерба</b></p><span class="">{{ court.sum_amount_main_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="margin_10" align="center"><strong>Присуждено</strong></div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Присужденная сумма ущерба</b></p><span class="">{{ court.sum_amount_main }} &#8381</span>
+			</div>
+		</div>
+		{% elif court.type_proceedings_choises == 3 %}
+		<!-- Административное судопроизводство -->
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Сумма иска</b></p>{{ court.lawsuit_amount }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Основное требование</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_main_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма неустойки</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_penalty_agent_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма штрафа</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_of_penalty_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Неимущественная компенсация</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_moral_damage_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма экспертизы</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_expertize_prognosis }} &#8381</span>
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма госпошлины</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.state_duty_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Итого заявлено</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.total_sum_in_the_case_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="margin_10" align="center"><strong>Присуждено</strong></div>
+		<div class="row">
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Основное требование</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_main }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма неустойки</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_moral_damage }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Сумма штрафа</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_of_penalty }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Неимущественная компенсация</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_moral_damage }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма экспертизы</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.sum_amount_expertize }} &#8381</span>
+			</div>
+			<div class="col-lg-6 table_block_item">
+				<p class="court_detail_p"><b>Сумма госпошлины</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.state_duty }} &#8381</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Итого присуждено</b></p><span class="{% if court.court_result == True %}court_p_win{% elif court.court_result == False %}court_p_defeat{% else %}{% endif %}">{{ court.total_sum_in_the_case }} &#8381</span>
+			</div>
+		</div>
+		{% elif court.type_proceedings_choises == 4 %}
+		<!-- КОАП -->
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Заявленная сумма ущерба</b></p><span class="">{{ court.sum_amount_main_prognosis }} &#8381</span>
+			</div>
+		</div>
+		<div class="margin_10" align="center"><strong>Присуждено</strong></div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Присужденная сумма ущерба</b></p><span class="">{{ court.sum_amount_main }} &#8381</span>
+			</div>
+		</div>
+		{% endif %}
+		<hr />
+		<div class="margin_10" align="center"><strong>Взыскание юридических услуг</strong></div>
+		<div class="margin_10" align="center"><strong>Заявлено</strong></div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item ">
+				<p class="court_detail_p"><b>Всего представительских заявлено</b></p>{{ court.total_amount_expected_additional }} &#8381
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Юр. услуги</b></p>{{ court.sum_amount_expected_additional }} &#8381
+			</div>
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Почтовые расходы</b></p>{{ court.postage_expected_expenses }} &#8381
+			</div>
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Транспортные расходы</b></p>{{ court.fare_expected_expenses }} &#8381
+			</div>
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Иные расходы</b></p>{{ court.other_expected_expenses }} &#8381
+			</div>
+		</div>
+		<div class="margin_10" align="center"><strong>Присуждено</strong></div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item ">
+				<p class="court_detail_p"><b>Всего представительских присуждено</b></p>{{ court.total_amount_additional }} &#8381
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 table_block_item">
+				<p class="court_detail_p"><b>Юр. услуги</b></p><span class="">{{ court.sum_amount_additional }} &#8381</span>
+			</div>
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Почтовые расходы</b></p>{{ court.postage_expenses }} &#8381
+			</div>
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Транспортные расходы</b></p>{{ court.fare_expenses }} &#8381
+			</div>
+			<div class="col-lg-3 table_block_item ">
+				<p class="court_detail_p"><b>Иные расходы</b></p>{{ court.other_expenses }} &#8381
+			</div>
+		</div>
+		<hr />
+		<div class="margin_10" align="center"><strong>Дополнительная информация</strong></div>
+		<div class="row">
+			<div class="col-lg-12 table_block_item">
+				<p class="court_detail_p"><b>Дополнительный комментарий</b></p>{{ court.text }}
+			</div>
+		</div>
+	</div>
+		<br />
+<!-- Documents / Документы -->
+		<div class="block_name" align="center"><strong class="document_word">Документы</strong></div>
+		<div class="container dark_block_bg_z_index_none">
+			<div class="row">
+				<div class="col-lg-6 court_document_block_left">
+					<div align="center">Иные документы</div>
+					<br />
+					{% for i in courts_documents %}
+					<ul>
+						<li class="document_li">
+								<a  target="_blank" href="{{ i.court_ducuments.url }}"><small>№ {{ forloop.counter }}</small> {{ i.court_ducuments.name |slice:"15:50" }}</a>
+							<!-- Button trigger modal -->
+							<span align="right">
+								<button type="button" class="document_delete" data-toggle="modal" data-target="#simple_doc_delete_modal-{{ i.id }}">x
+								</button>
+							</span>
+
+							<!-- Modal -->
+							<div class="modal fade" id="simple_doc_delete_modal-{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitles" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+								  <div align="center" class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitles">Вы уверены, что хотите удалить данный документ?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span class="document_delete" aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div align="center" class="modal-body">
+									  <div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+									Вы не сможете восстановить удаленный документ после подтверждения
+								  </div>
+								  <div class="modal-footer">
+									<div align="right"><small><strong><a class="delete_agreement"  href="{% url 'courts_documents_delete' pk=i.id %}">Ок </a></strong></small></div>
+									<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+
+						</li>
+					</ul>
+					{% endfor %}
+					<br />
+					<hr />
+					<form  enctype="multipart/form-data" method="POST" class="">{% csrf_token %}
+							<div class="input_file" align="left">{{ form_doc.court_ducuments }}</div><div align="right" class=""><div><button onclick="ScrollSave()" type="submit" name="btnformdocuments" class="common_link_btn">Загрузить</button></div></div>
+					</form>
+					<br />
+				</div>
+				<div class="col-lg-6 court_document_block_left">
+					<div align="center">Судебное решение</div>
+					<br />
+					{% for i in courts_judgment %}
+					<ul>
+						<li class="document_li">
+							<a target="_blank" href="{{ i.court_judjment.url }}"><small>№ {{ forloop.counter }}</small> {{ i.court_judjment.name|slice:"14:80" }}</a>
+						<!-- Button trigger modal -->
+							<span align="right">
+								<button type="button" class="document_delete" data-toggle="modal" data-target="#jud_doc_delete_modal-{{ i.id }}">
+								  x
+								</button>
+							</span>
+
+							<!-- Modal -->
+							<div class="modal fade" id="jud_doc_delete_modal-{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitles2" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+								  <div align="center" class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitles2">Вы уверены, что хотите удалить судебное решение?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span class="document_delete" aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div align="center" class="modal-body">
+									  <div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+									Вы не сможете восстановить удаленный документ после подтверждения
+								  </div>
+								  <div class="modal-footer">
+									<div align="right"><small><strong><a class="delete_agreement"  href="{% url 'courts_judgment_delete' pk=i.id %}">Ок </a></strong></small></div>
+									<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						</li>
+					</ul>
+					{% endfor %}
+					<br />
+					<hr />
+					<form enctype="multipart/form-data" method="POST" class="">{% csrf_token %}
+						<div align="left">{{ form_judg.court_judjment }}</div><div align="right" class=""><div><button onclick="ScrollSave()" type="submit" name="btnformjudgment" class="common_link_btn">Загрузить</button></div></div>
+					</form>
+				</div>
+			</div>
+		</div>
+<!-- View comments / Отображение коментариев -->
+			<br />
+			<div class="container">
+			<div class="">
+			<div class="block_name" align="center"><h6><strong><p>Комментарии</p></strong></h6></div>
+			{% if is_paginated %}
+			<!-- Top Paginator / Верхний пагинатор -->
+			<ul class="pagination page_lister">
+				<li class="pages-item {% if not prev_url %} disabled {% endif %}">
+					<a class="pages-link" href="{{ prev_url }}" tabindex="-1"><b>&#9668;</b></a>
+				</li>
+				{% if page_object.number > 3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ 1 }}" tabindex="-1">{{ 1 }}</a>
+				</li>
+				{% endif %}
+				{% for n in page_object.paginator.page_range %}
+				{% if page_object.number == n %}
+				<li class="pages-item active pages-active">
+					<p class="pages-active" href="?page={{ n }}" tabindex="-1"><b>{{ n }}</b><span class="cr-only pages-actives"></span></p>
+				</li>
+					{% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ n }}">{{ n }}</a>
+				</li>
+					{% endif %}
+					{% endfor %}
+				{% if page_object.number < paginator.num_pages|add:-2%}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ paginator.num_pages }}" tabindex="-1">{{ paginator.num_pages }}</a>
+				</li>
+				{% endif %}
+				<li class="pages-item {% if not next_url %} disabled {% endif %}">
+					<a class="pages-link" href="{{ next_url }}" tabindex="-1"><b>&#9658;</b></a>
+				</li>
+			</ul>
+			{% endif %}
+			</div>
+			{% for comm_item in page_object.object_list %}
+			<div class="container comment_container">
+				<div class="row">
+					<div class="col-lg-12 ">
+						<div class="comment_date"><small><i>{{ comm_item.create_date }} | № {{ forloop.counter }}</i></small></div>
+						
+						<div class="comment_author"><a href="{% url 'profile_detail' pk=comm_item.author.profiles.id %}">{{ comm_item.author.profiles.name }} {{ comm_item.author.profiles.surname }}</a></div>
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-1">
+						<img class="comment_avatar" src="{{ comm_item.author.profiles.avatar.url }}" height="100px" width="100px"/>
+					</div>
+					<div class="col-xs-12">
+						<div class="comment_text">{{ comm_item.text|safe }}</div>
+					</div>
+					
+				</div>
+				
+				<div class="row">
+					<div class="col-lg-12 court_comments_bot_bar">
+
+					{% if comm_item.author.id == request.user.id or request.user.is_staff %}
+
+					<!-- Button trigger modal -->
+						<div align="right">
+							<button type="button" class="common_link_btn" data-toggle="modal" data-target="#comm_delete_modal-{{ comm_item.id }}">
+							  Удалить
+							</button>
+						</div>
+
+						<!-- Modal -->
+						<div class="modal fade" id="comm_delete_modal-{{ comm_item.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+						  <div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content">
+							  <div align="center" class="modal-header">
+								<h5 class="modal-title" id="exampleModalLongTitle">Вы уверены, что хотите удалить комментарий?</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								  <span class="document_delete" aria-hidden="true">&times;</span>
+								</button>
+							  </div>
+							  <div align="center" class="modal-body">
+								  <div><img alt="Не прочитавшие" class="circle_image" src="{{ MEDIA_URL }}/icons/alert.png" height="150px" width="150px"/></div>
+								Вы не сможете восстановить удаленный комментарий после подтверждения
+							  </div>
+							  <div class="modal-footer">
+								<div align="right"><small><strong><a class="delete_agreement"  href="{% url 'courts_comments_delete' pk=comm_item.id %}">Ок</a></strong></small></div>
+							  	<button type="button" class="common_link_btn" data-dismiss="modal">Отмена</button>
+							  </div>
+							</div>
+						  </div>
+						</div>
+					{% endif %}
+
+					</div>
+					
+				</div>
+			</div>
+			<br />
+			{% endfor %}
+			
+			</div>
+<!-- Bottom Paginator / Нижний пагинатор -->
+<div class="container">
+{% if is_paginated %}
+			<ul class="pagination page_lister">
+				<li class="pages-item {% if not prev_url %} disabled {% endif %}">
+					<a class="pages-link" href="{{ prev_url }}" tabindex="-1"><b>&#9668;</b></a>
+				</li>
+				{% if page_object.number > 3 %}
+				<li class="pages-item">
+					<a name="scroll" class="pages-link" href="?page={{ 1 }}" tabindex="-1">{{ 1 }}</a>
+				</li>
+				{% endif %}
+				{% for n in page_object.paginator.page_range %}
+				{% if page_object.number == n %}
+				<li class="pages-item active pages-active">
+					<p class="pages-active" href="?page={{ n }}" tabindex="-1"><b>{{ n }}</b><span class="cr-only pages-active"></span></p>
+				</li>
+					{% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ n }}">{{ n }}</a>
+				</li>
+					{% endif %}
+					{% endfor %}
+				{% if page_object.number < paginator.num_pages|add:-2%}
+				<li class="pages-item">
+					<a class="pages-link" href="?page={{ paginator.num_pages }}" tabindex="-1">{{ paginator.num_pages }}</a>
+				</li>
+				{% endif %}
+				<li class="pages-item {% if not next_url %} disabled {% endif %}">
+					<a class="pages-link" href="{{ next_url }}" tabindex="-1"><b>&#9658;</b></a>
+				</li>
+			</ul>
+			{% endif %}
+			</div>
+<!-- Input comment form / Форма ввода комментария -->
+			<form onclick="ScrollSave()" method="POST" class="courts-form">{% csrf_token %}
+			<div class="container">
+				<div class="form_comment_block">
+					<div>
+						<span class="com_text_block">Комментарий:</span>
+					</div>
+					<div>
+						{{ form.text }}
+					</div>
+					<div class="text-right"><button type="submit" name="btnformcomments" class="common_link_btn">Добавить комментарий</button></div>
+				</div>
+			</div>
+			</form>
+		</div>
+	<br ><br >
+	<br ><br >
+
+{% endblock %}

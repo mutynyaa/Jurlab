@@ -1,0 +1,38 @@
+{% extends 'mainpage/base.html' %}
+{% block content %}
+<br /><br /><br /><br /><br />
+<div class="login_container">
+<div class="" align="center"><img src="{{ MEDIA_URL }}/icons/Logo_futark_black.png" height="130px" width="" /></div>
+<br />
+<div align="center"><strong>Доступ запрещен</strong></div>
+<br />
+<div class="container login_block dark_block_bg br_10">
+    <div class="row justify-content-center">
+        <div align="center" class="col-5">
+            <form id="add_form" method="post">
+            {% csrf_token %}
+                <div title="Для работы с сайтом, необходимо войти в систему"><strong>Пожалуйста, авторизируйтесь:</strong></div>
+                <hr >
+                <div>Введите имя пользователя:</div>
+
+            <div title="Укажите ваше имя пользователя">{{ form.username }}</div>
+                <br />
+                <div>Введите пароль:</div>
+
+            <div title="Укажите ваш пароль">{{ form.password }}</div>
+            <div class="error_message" align="center">
+                <strong>
+                {% for error in form.non_field_errors %}
+                {{ error|escape  }}
+                {% endfor %}
+                </strong>
+            </div>
+			<br />
+            <div align="right"><button title="Авторизоваться" form="add_form" type="submit" class="common_link_btn">Войти</button></div>
+			<br />
+            </form>
+        </div>
+    </div>
+</div>
+    </div>
+{% endblock %}

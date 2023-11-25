@@ -1,0 +1,8 @@
+{% for user in users_list %}
+{{ user }}
+{% if user in online_list %}
+online
+{%else%}
+offline
+{% endif %}
+{% endfor%}

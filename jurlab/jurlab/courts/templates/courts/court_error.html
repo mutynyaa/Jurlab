@@ -1,0 +1,12 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br><br>
+<hr />
+<div align="center"><h4>{{ error_message }}</h4></div>
+<hr />
+<div align="center"><strong><a href="{% url 'court' %}">Вернуться к списку судов</a></strong></div>
+<br><br><br><br><br>
+<br><br><br>
+{% endblock %}
